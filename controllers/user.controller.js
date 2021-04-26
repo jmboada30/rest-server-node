@@ -1,36 +1,53 @@
 const { request, response } = require('express');
 
-const getUsers = (req = request, res = response) => {
-  const { page = '1', limit = '10' } = req.query;
-  res.json({
-    message: 'get API - Controller',
-    page,
-    limit,
-  });
+const User = require('../models/users');
+const { hashPass } = require('../helpers/bcrypt');
+
+const getUsers = async (req = request, res = response) => {
+  const { limit = 5, from = 0 } = req.query;
+
+  const [total, users] = await Promise.all([
+    User.countDocuments({ state: true }),
+    User.find({ state: true }).skip(Number(from)).limit(Number(limit)),
+  ]);
+
+  res.json({ total, users });
 };
 
-const postUser = (req = request, res = response) => {
-  const body = req.body;
-  res.json({
-    message: 'post API - Controller',
-    body,
-  });
+const postUser = async (req = request, res = response) => {
+  const { name, email, pass, rol } = req.body;
+  const user = new User({ name, email, pass, rol });
+
+  // Encriptar Pass
+  user.pass = hashPass(pass);
+
+  // guardar
+  await user.save();
+
+  res.json(user);
 };
 
-const putUser = (req = request, res = response) => {
+const putUser = async (req = request, res = response) => {
   const id = req.params.id;
-  res.json({
-    message: 'put API - Controller',
-    id,
-  });
+  const { _id, pass, google, correo, ...data } = req.body;
+
+  if (pass) data.pass = hashPass(pass);
+
+  const user = await User.findByIdAndUpdate(id, data);
+
+  res.json(user);
 };
 
-const deleteUser = (req = request, res = response) => {
+const deleteUser = async (req = request, res = response) => {
   const id = req.params.id;
-  res.json({
-    message: 'delete API - Controller',
-    id,
-  });
+
+  // Borrar totalmente, no se recomienda
+  // const user = await User.findByIdAndDelete(id);
+
+  // Borrar virtualmente
+  const user = await User.findByIdAndUpdate(id, { state: false });
+
+  res.json(user);
 };
 
 module.exports = {
