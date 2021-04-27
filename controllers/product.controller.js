@@ -25,7 +25,7 @@ const getProductById = async (req = request, res = response) => {
 };
 
 const postProduct = async (req = request, res = response) => {
-  const { name, ...data } = req.body;
+  const { name, user, ...data } = req.body;
 
   const existProduct = await Product.findOne({ name: name.toUpperCase() });
 
