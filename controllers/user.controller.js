@@ -40,11 +40,6 @@ const putUser = async (req = request, res = response) => {
 
 const deleteUser = async (req = request, res = response) => {
   const id = req.params.id;
-
-  // Borrar totalmente, no se recomienda
-  // const user = await User.findByIdAndDelete(id);
-
-  // Borrar virtualmente
   const user = await User.findByIdAndUpdate(id, { state: false });
 
   res.json(user);

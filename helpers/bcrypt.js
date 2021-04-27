@@ -6,6 +6,11 @@ const hashPass = (pass = '') => {
   return bcryptjs.hashSync(pass, salt);
 };
 
+const vericatePass = (passReceived, passDB) => {
+  return bcryptjs.compareSync(passReceived, passDB);
+};
+
 module.exports = {
   hashPass,
+  vericatePass,
 };
