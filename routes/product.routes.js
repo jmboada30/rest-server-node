@@ -37,7 +37,7 @@ router.post(
     validateJWT,
     check('name', 'El nombre es obligatorio').not().isEmpty(),
     check('category', 'No es un ID valido').isMongoId(),
-    check('id').custom(existCategoryById),
+    check('category').custom(existCategoryById),
     validateFields,
   ],
   postProduct
@@ -51,7 +51,7 @@ router.put(
     check('id', 'No es un ID valido').isMongoId(),
     check('id').custom(existProductById),
     check('category', 'No es un ID valido').isMongoId(),
-    check('id').custom(existCategoryById),
+    check('category').custom(existCategoryById),
     validateFields,
   ],
   putProduct
