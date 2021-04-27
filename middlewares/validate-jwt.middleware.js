@@ -1,12 +1,12 @@
 const { response, request } = require('express');
 const jwt = require('jsonwebtoken');
-const User = require('../models/users');
+const User = require('../models/user');
 
 const validateJWT = async (req = request, res = response, next) => {
   const token = req.header('x-token');
 
   if (!token) {
-    res.status(400).json({
+    return res.status(400).json({
       msg: 'No envio el Token',
     });
   }

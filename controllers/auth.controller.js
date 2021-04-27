@@ -2,7 +2,7 @@ const { request, response } = require('express');
 const { vericatePass } = require('../helpers/bcrypt');
 const { generateJWT } = require('../helpers/jwt');
 
-const User = require('../models/users');
+const User = require('../models/user');
 
 const login = async (req = request, res = response) => {
   const { email, pass } = req.body;

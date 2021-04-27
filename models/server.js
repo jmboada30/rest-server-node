@@ -4,10 +4,17 @@ const cors = require('cors');
 const { dbConnection } = require('../database/config.db');
 
 class Server {
-  constructor() {
+  constructor(apiVersion) {
     this.app = express();
     this.port = process.env.PORT;
-    this.apiVersion = process.env.API_VERSION || '/api/v1';
+
+    // Routes
+    this.paths = {
+      auth: apiVersion + '/auth',
+      categories: apiVersion + '/categories',
+      products: apiVersion + '/products',
+      users: apiVersion + '/users',
+    };
 
     // Conectar DB
     this.connectDB();
@@ -15,9 +22,6 @@ class Server {
     // Middlewares
     this.middlewares();
 
-    // Routes
-    this.usersPath = this.apiVersion + '/users';
-    this.authPath = this.apiVersion + '/auth';
     this.routes();
   }
 
@@ -37,8 +41,10 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.authPath, require('../routes/auth.routes'));
-    this.app.use(this.usersPath, require('../routes/user.routes'));
+    this.app.use(this.paths.auth, require('../routes/auth.routes'));
+    this.app.use(this.paths.users, require('../routes/user.routes'));
+    this.app.use(this.paths.categories, require('../routes/category.routes'));
+    this.app.use(this.paths.products, require('../routes/product.routes'));
   }
 
   listen() {
